@@ -71,3 +71,36 @@ def pregunta_01():
 
 
     """
+
+    import os
+    import glob
+    import pandas as pd
+
+    train_dataset = pd.DataFrame()
+    train_dataset["phrase"] = None
+    train_dataset["target"] = None
+
+    test_dataset = pd.DataFrame()
+    test_dataset["phrase"] = None
+    test_dataset["target"] = None
+
+    input_folders = ["train", "test"]
+    sentiments = ["negative", "neutral", "positive"]
+
+    for folder in input_folders:
+        for sentiment in sentiments:
+            files = glob.glob(f"files/input/{folder}/{sentiment}/*")
+            for file in files:
+                with open(file, "r") as f:
+                    if folder == "train":
+                        train_dataset.loc[len(train_dataset)] = [f.read(), sentiment]
+                    else:
+                        test_dataset.loc[len(test_dataset)] = [f.read(), sentiment]
+
+    if os.path.exists("files/output"):
+        pass
+    else:
+        os.mkdir("files/output")
+
+    train_dataset.to_csv("files/output/train_dataset.csv")
+    test_dataset.to_csv("files/output/test_dataset.csv")
